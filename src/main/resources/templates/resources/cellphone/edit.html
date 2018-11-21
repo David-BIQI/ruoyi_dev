@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link href="/selectpage/selectpage.css" th:href="@{/selectpage/selectpage.css}" rel="stylesheet"/>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-phone-edit" th:object="${phone}">
+            <input id="id" name="id" th:field="*{id}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">电话号码：</label>
+                <div class="col-sm-8">
+                    <input id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">国家：</label>
+                <div class="col-sm-8">
+                	<select id="countrySelect" name="countryId" class="form-control m-b" th:with="type=${@resourcesWebService.selectCountry()}">
+	                    <option th:each="country : ${type}" th:text="${country['countryName']}" th:value="${country['countryId']}" th:attr="data-phonecode=${country['phoneCode']}" th:field="*{countryId}"></option>
+	                </select>    
+				</div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">重要性：</label>
+                <div class="col-sm-8">
+                  	<select id="phoneType" name="phoneType" class="form-control m-b" th:with="type=${@dictService.selectDictData('sys_phone_importance')}">
+	                    <option th:each="dict : ${type}" th:if="${dict['dictValue']} gt '0' and ${dict['dictValue']} lt '4'" th:text="${dict['dictLabel']}" th:value="${dict['dictValue']}" th:field="*{phoneType}"></option>
+	                </select>
+	            </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">设备：</label>
+                <div class="col-sm-8">
+	                <input type="text" name="deviceId" class="form-control" id="deviceSelect" th:attr="data-init=*{deviceId}">
+                </div>
+            </div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+	<script th:src="@{/ajax/libs/select/select2.js}"></script>
+	<script th:src="@{/selectpage/selectpage.js}"></script>
+    <script type="text/javascript">
+		var prefix = ctx + "module/phone"
+		$("#form-phone-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			},
+			submitHandler: function(form) {
+// 				console.log($('#form-phone-edit').serialize());
+// 				$.operate.save(prefix + "/save", $('#form-phone-edit').serialize());
+				edit();
+			}
+		});
+		
+		$("#deviceSelect").selectPage({
+		  	showField : 'serialNumber',
+		    keyField : 'id',
+		    autoSelectFirst: false,
+		    data : ctx + 'module/device/page',
+		    eAjaxSuccess : function(d){
+				return d;
+			},
+			formatItem : function(data) {
+				return data.serialNumber + '(品牌: '+data.deviceMark+', 颜色: ' + data.deviceColor + ')';
+			}
+		});
+
+		function edit() {
+			var id = $("input[name='id']").val();
+			var phoneNumber = $("input[name='phoneNumber']").val();
+			var phoneType = $("#phoneType option:selected").val();
+			var countryId = $("#countrySelect option:selected").val();
+			var phoneCode = $("#countrySelect option:selected").data('phonecode');
+			var deviceId = $("#deviceSelect").val();
+			if(!deviceId){
+				deviceId = 0;
+			}
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : prefix + "/save",
+				data : {
+					"id" : id,
+					"phoneNumber" : phoneNumber,
+					"phoneType" : phoneType,
+					"countryId" : countryId,
+					"phoneCode" : phoneCode,
+					"deviceId" : deviceId
+				},
+				async : false,
+				error : function(request) {
+					$.modal.alertError("系统错误");
+				},
+				success : function(data) {
+					$.operate.saveSuccess(data);
+				}
+			});
+		}
+	</script>
+</body>
+</html>

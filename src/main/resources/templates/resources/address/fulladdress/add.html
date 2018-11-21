@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header">
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-fulladdress-add">
+			<div class="form-group">
+				<label class="col-sm-3 control-label">国家：</label>
+				<div class="col-sm-8">
+					<select id="countrySelect" class="form-control m-b" th:with="type=${@resourcesWebService.selectCountry()}" lay-filter="countryFilter">
+	                    <option th:each="country : ${type}" th:text="${country['countryName']}" th:value="${country['countryId']}"></option>
+	                </select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">城市名称：</label>
+				<div class="col-sm-8">
+	                <select id="citySelect" class="form-control m-b" lay-verify="required"
+						lay-search="" lay-filter="citySelect">
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">地址：</label>
+				<div class="col-sm-8">
+					<input id="address" name="address" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">邮政编码：</label>
+				<div class="col-sm-8">
+					<input id="zipCode" name="zipCode" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">备注：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger"
+						type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div th:include="include::footer"></div>
+
+	<script th:src="@{/ajax/libs/select/select2.js}"></script>
+	<script type="text/javascript">
+		var prefix = ctx + "module/fulladdress";
+		var cityPrefix = ctx + "module/city";
+		$("#form-fulladdress-add").validate({
+			rules : {
+				address : {
+					required : true,
+				},
+				zipCode : {
+					required : true,
+				},
+			},
+			submitHandler : function(form) {
+				add();
+			}
+		});
+
+		function add() {
+        	var countryId = $("#countrySelect option:selected").val();
+        	var cityId = $("#citySelect option:selected").val();
+        	var address = $("input[name='address']").val();
+        	var zipCode = $("input[name='zipCode']").val();
+        	var remark = $("input[name='remark']").val();
+        	$.ajax({
+        		cache : true,
+        		type : "POST",
+        		url : prefix + "/save",
+        		data : {
+        			"cityId": cityId,
+        			"countryId": countryId,
+        			"address": address,
+        			"zipCode": zipCode,
+        			"remark": remark
+        		},
+        		async : false,
+        		error : function(request) {
+        			$.modal.alertError("系统错误");
+        		},
+        		success : function(data) {
+        			$.operate.saveSuccess(data);
+        		}
+        	});
+        }
+		
+		layui.use([ 'layer', 'form' ], function() {
+			var layer = layui.layer, form = layui.form;
+			var option = $("#countrySelect option").first();
+	        $.getJSON(cityPrefix+"/list/country?countryId="+$(option).val(), function(data){
+               var optionstring = "";
+               $.each(data.rows, function(i,item){
+                   optionstring += "<option value=\"" + item.id + "\" >" + item.city + "</option>";
+               });
+               $("#citySelect").html(optionstring);
+               form.render('select'); //这个很重要
+	        });
+	        $("#countrySelect").on("select2:select", function(e) {
+	        	 var data1 = e.params.data;
+			     $.getJSON(cityPrefix+"/list/country?countryId="+data1.id, function(data){
+	                var optionstring = "";
+	                $.each(data.rows, function(i,item){
+	                    optionstring += "<option value=\"" + item.id + "\" >" + item.city + "</option>";
+	                });
+	                $("#citySelect").html(optionstring);
+	                form.render('select'); //这个很重要
+		         });
+			});
+			layui.form.render();
+		});
+	</script>
+</body>
+</html>

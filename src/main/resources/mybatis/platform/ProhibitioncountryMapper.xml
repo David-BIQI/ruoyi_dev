@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.module.platform.mapper.ProhibitioncountryMapper">
+    
+    <resultMap type="Prohibitioncountry" id="ProhibitioncountryResult">
+        <result property="id"    column="id"    />
+        <result property="platformId"    column="platform_id"    />
+        <result property="countryId"    column="country_id"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+	
+	<sql id="selectProhibitioncountryVo">
+        select id, platform_id, country_id, status, create_time, create_by, update_time, update_by, remark from sys_platform_prohibitioncountry
+    </sql>
+	
+    <select id="selectProhibitioncountryList" parameterType="Prohibitioncountry" resultMap="ProhibitioncountryResult">
+        <include refid="selectProhibitioncountryVo"/>
+        <where>  
+            <if test="id != null and id != ''"> and id = #{id}</if>
+             <if test="platformId != null and platformId != ''"> and platform_id = #{platformId}</if>
+             <if test="countryId != null and countryId != ''"> and country_id = #{countryId}</if>
+             <if test="status != null and status != ''"> and status = #{status}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+         </where>
+    </select>
+    
+    <select id="selectProhibitioncountryById" parameterType="Integer" resultMap="ProhibitioncountryResult">
+        <include refid="selectProhibitioncountryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProhibitioncountry" parameterType="Prohibitioncountry">
+        insert into sys_platform_prohibitioncountry (
+			<if test="id != null and id != '' ">id, </if>
+			<if test="platformId != null and platformId != '' ">platform_id, </if>
+			<if test="countryId != null and countryId != '' ">country_id, </if>
+			<if test="status != null and status != '' ">status, </if>
+			<if test="createTime != null and createTime != '' ">create_time, </if>
+			<if test="createBy != null and createBy != '' ">create_by, </if>
+			<if test="updateTime != null and updateTime != '' ">update_time, </if>
+			<if test="updateBy != null and updateBy != '' ">update_by, </if>
+			<if test="remark != null and remark != '' ">remark</if>
+        )values(
+			<if test="id != null and id != ''">#{id}, </if>
+			<if test="platformId != null and platformId != ''">#{platformId}, </if>
+			<if test="countryId != null and countryId != ''">#{countryId}, </if>
+			<if test="status != null and status != ''">#{status}, </if>
+			<if test="createTime != null and createTime != ''">#{createTime}, </if>
+			<if test="createBy != null and createBy != ''">#{createBy}, </if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime}, </if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy}, </if>
+			<if test="remark != null and remark != ''">#{remark}</if>
+		)
+    </insert>
+	 
+    <update id="updateProhibitioncountry" parameterType="Prohibitioncountry">
+        update sys_platform_prohibitioncountry 
+        <set>
+            <if test="platformId != null and platformId != ''">platform_id = #{platformId}, </if>
+            <if test="countryId != null and countryId != ''">country_id = #{countryId}, </if>
+            <if test="status != null and status != ''">status = #{status}, </if>
+            <if test="createTime != null and createTime != ''">create_time = #{createTime}, </if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy}, </if>
+            <if test="updateTime != null and updateTime != ''">update_time = #{updateTime}, </if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy}, </if>
+            <if test="remark != null and remark != ''">remark = #{remark}</if>
+        </set>
+        where id = #{id}
+    </update>
+	
+	<delete id="deleteProhibitioncountryById" parameterType="Integer">
+        delete from sys_platform_prohibitioncountry where id = #{id}
+    </delete>
+	
+    <delete id="deleteProhibitioncountryByIds" parameterType="String">
+        delete from sys_platform_prohibitioncountry where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

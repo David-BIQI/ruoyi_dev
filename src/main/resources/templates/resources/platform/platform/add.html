@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link href="/selectpage/selectpage.css" th:href="@{/selectpage/selectpage.css}" rel="stylesheet"/>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-platform-add">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">平台名称：</label>
+				<div class="col-sm-8">
+					<input id="platformName" name="platformName" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">关联平台类型：</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" name="platformTypeId" id="platformTypeSelect" >
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">官方网站：</label>
+				<div class="col-sm-8">
+					<input id="officialWebsite" name="officialWebsite" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">平台logo：</label>
+				<div class="col-sm-8">
+					<div class="layui-upload-drag" id="platformLogo">
+					  <i class="layui-icon"></i>
+					  <p>点击上传，或将文件拖拽到此处</p>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">内部交易：</label>
+				<div class="col-sm-8">
+					<select id="interTransaction" name="interTransaction" class="form-control m-b" th:with="type=${@dictService.selectDictData('sys_inter_transaction')}">
+	                    <option th:each="dict : ${type}" th:text="${dict['dictLabel']}" th:value="${dict['dictValue']}"></option>
+	                </select>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">KYC类型：</label>
+				<div class="col-sm-8">
+					<select id="kycType" name="kycType" class="form-control m-b" th:with="type=${@dictService.selectDictData('sys_kyc_type')}">
+	                    <option th:each="dict : ${type}" th:text="${dict['dictLabel']}" th:value="${dict['dictValue']}"></option>
+	                </select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+	<script th:src="@{/ajax/libs/select/select2.js}"></script>
+	<script th:src="@{/selectpage/selectpage.js}"></script>
+    <script type="text/javascript">
+		var prefix = ctx + "module/platform"
+		$("#form-platform-add").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			},
+			submitHandler: function(form) {
+				$.operate.save(prefix + "/save", $('#form-platform-add').serialize());
+			}
+		});
+		
+		$("#platformTypeSelect").selectPage({
+		  	showField : 'platformTypeName',
+		    keyField : 'id',
+		    data : ctx + 'module/platform/type/page',
+		    eAjaxSuccess : function(d){
+				return d;
+			},
+			formatItem : function(data) {
+				return data.platformTypeName + '(货币: ' + data.platformCurrency + ')';
+			}
+		});
+		
+		layui.use('upload', function() {
+			var $ = layui.jquery, upload = layui.upload;
+
+			//拖拽上传
+			upload.render({
+				elem : '#platformLogo',
+				accept : 'images',
+				url : prefix + '/updateLogo',
+				acceptMime : 'image/*',
+				done : function(res, index, upload) {
+					if (res.code == 0) {
+						let src = ctx + "common/upFileDownlaod?fileName=" + res.msg;
+						$("#platformLogo").children().remove();
+						var html = '<i class="layui-icon">' +
+									'<img width="244" height="133" src="'+src+'" />' +
+									'<input type="hidden" name="platformLogo" value="'+ res.msg +'" />' +
+									'</i>';
+						$("#platformLogo").append(html);
+					}
+				}
+			});
+		});
+	</script>
+</body>
+</html>

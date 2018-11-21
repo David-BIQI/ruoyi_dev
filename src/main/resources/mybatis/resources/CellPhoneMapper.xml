@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.module.cellphone.mapper.CellPhoneMapper">
+    
+    <resultMap type="Phone" id="PhoneResult">
+        <result property="id"    column="id"    />
+        <result property="phoneCode"    column="phone_code"    />
+        <result property="phoneNumber"    column="phone_number"    />
+        <result property="countryId"    column="country_id"    />
+        <result property="phoneType"    column="phone_type"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="usageStatus"    column="usage_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="countryName"    column="country_name"    />
+        <result property="deviceName"    column="serial_number"    />
+    </resultMap>
+	
+	<sql id="selectPhoneVo">
+        select id, phone_code, phone_number, country_id, phone_type, device_id, usage_status, create_by, create_time, update_by, update_time from sys_cell_phone
+    </sql>
+	
+    <select id="selectPhoneList" parameterType="Phone" resultMap="PhoneResult">
+        <include refid="selectPhoneVo"/>
+        <where>  
+            <if test="id != null and id != ''"> and id = #{id}</if>
+             <if test="phoneCode != null and phoneCode != ''"> and phone_code = #{phoneCode}</if>
+             <if test="phoneNumber != null and phoneNumber != ''"> and phone_number = #{phoneNumber}</if>
+             <if test="countryId != null and countryId != ''"> and country_id = #{countryId}</if>
+             <if test="phoneType != null and phoneType != ''"> and phone_type = #{phoneType}</if>
+             <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId}</if>
+             <if test="usageStatus != null and usageStatus != ''"> and usage_status = #{usageStatus}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectPhonePage" parameterType="Phone" resultMap="PhoneResult">
+         select 
+         	p.id, p.phone_code, p.phone_number, p.country_id, p.phone_type, p.device_id, p.usage_status, p.create_by, p.create_time, p.update_by, p.update_time, c.country_name, d.serial_number
+         from sys_cell_phone  p left join sys_address_country c on p.country_id = c.id left join sys_device d on d.id = p.device_id
+         <where>  
+            <if test="id != null and id != ''"> and p.id = #{id}</if>
+             <if test="phoneCode != null and phoneCode != ''"> and p.phone_code = #{phoneCode}</if>
+             <if test="phoneNumber != null and phoneNumber != ''"> and p.phone_number = #{phoneNumber}</if>
+             <if test="countryId != null and countryId != ''"> and p.country_id = #{countryId}</if>
+             <if test="phoneType != null and phoneType != ''"> and p.phone_type = #{phoneType}</if>
+             <if test="deviceId != null and deviceId != ''"> and p.device_id = #{deviceId}</if>
+             <if test="usageStatus != null and usageStatus != ''"> and p.usage_status = #{usageStatus}</if>
+         </where>
+    </select>
+    
+    <select id="selectPhoneById" parameterType="Integer" resultMap="PhoneResult">
+        <include refid="selectPhoneVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPhone" parameterType="Phone">
+        insert into sys_cell_phone (
+			<if test="id != null and id != '' ">id, </if>
+			<if test="phoneCode != null and phoneCode != '' ">phone_code, </if>
+			<if test="phoneNumber != null and phoneNumber != '' ">phone_number, </if>
+			<if test="countryId != null and countryId != '' ">country_id, </if>
+			<if test="phoneType != null and phoneType != '' ">phone_type, </if>
+			<if test="deviceId != null and deviceId != '' ">device_id, </if>
+			<if test="usageStatus != null and usageStatus != '' ">usage_status, </if>
+			<if test="createBy != null and createBy != '' ">create_by, </if> 
+			create_time
+        )values(
+			<if test="id != null and id != ''">#{id}, </if>
+			<if test="phoneCode != null and phoneCode != ''">#{phoneCode}, </if>
+			<if test="phoneNumber != null and phoneNumber != ''">#{phoneNumber}, </if>
+			<if test="countryId != null and countryId != ''">#{countryId}, </if>
+			<if test="phoneType != null and phoneType != ''">#{phoneType}, </if>
+			<if test="deviceId != null and deviceId != ''">#{deviceId}, </if>
+			<if test="usageStatus != null and usageStatus != ''">#{usageStatus}, </if>
+			<if test="createBy != null and createBy != ''">#{createBy}, </if>
+			now()
+		)
+    </insert>
+	 
+    <update id="updatePhone" parameterType="Phone">
+        update sys_cell_phone 
+        <set>
+            <if test="phoneCode != null and phoneCode != ''">phone_code = #{phoneCode}, </if>
+            <if test="phoneNumber != null and phoneNumber != ''">phone_number = #{phoneNumber}, </if>
+            <if test="countryId != null and countryId != ''">country_id = #{countryId}, </if>
+            <if test="phoneType != null and phoneType != ''">phone_type = #{phoneType}, </if>
+            <if test="deviceId != null">device_id = #{deviceId}, </if>
+            <if test="usageStatus != null and usageStatus != ''">usage_status = #{usageStatus}, </if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy}, </if>
+            <if test="createTime != null and createTime != ''">create_time = #{createTime}, </if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy}, </if>
+            <if test="updateTime != null and updateTime != ''">update_time = #{updateTime}</if>
+        </set>
+        where id = #{id}
+    </update>
+	
+	<delete id="deletePhoneById" parameterType="Integer">
+        delete from sys_cell_phone where id = #{id}
+    </delete>
+	
+    <delete id="deletePhoneByIds" parameterType="String">
+        delete from sys_cell_phone where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

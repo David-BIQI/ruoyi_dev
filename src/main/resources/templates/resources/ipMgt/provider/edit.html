@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link href="/selectpage/selectpage.css" th:href="@{/selectpage/selectpage.css}" rel="stylesheet"/>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m layui-form" id="form-provider-edit" th:object="${provider}">
+            <input id="id" name="id" th:field="*{id}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">供应商名称：</label>
+                <div class="col-sm-8">
+                    <input id="providerName" name="providerName" th:field="*{providerName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">联系方式 - 旺旺：</label>
+                <div class="col-sm-8">
+                    <input id="wangwang" name="wangwang" th:field="*{wangwang}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">联系方式 - 微信：</label>
+                <div class="col-sm-8">
+                    <input id="wechat" name="wechat" th:field="*{wechat}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">联系方式 - QQ：</label>
+                <div class="col-sm-8">
+                    <input id="qq" name="qq" th:field="*{qq}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">联系方式 - 手机号码：</label>
+                <div class="col-sm-8">
+                    <input id="cellPhone" name="cellPhone" th:field="*{cellPhone}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">关联国家：</label>
+                <div class="col-sm-8">
+					<input type="text" class="form-control" name="countryId" id="countrySelect" th:attr="data-init=*{countryId}">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">供应商可信状态：</label>
+                <div class="col-sm-8">
+                    <input type="checkbox" id="statusSwitch" name="status" lay-skin="switch" lay-text="可信|拉黑" lay-filter="statusSwitch" th:checked="*{statusBool}">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">价格：</label>
+                <div class="col-sm-8">
+                    <input id="price" name="price" th:field="*{price}" class="form-control" type="text">
+                </div>
+            </div>
+			<div id="reasonDiv" class="form-group" th:style="'display:' + @{(*{statusBool} ? 'none' : 'block')} + ''">	
+                <label class="col-sm-3 control-label">禁用原因：</label>
+                <div class="col-sm-8">
+                    <input id="reason" name="reason" th:field="*{reason}" class="form-control" type="text">
+                </div>
+            </div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+	<script th:src="@{/selectpage/selectpage.js}"></script>
+    <script type="text/javascript">
+		var prefix = ctx + "module/ipMgt/provider"
+		$("#form-provider-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			},
+			submitHandler: function(form) {
+				edit();
+			}
+		});
+
+		layui.use('form', function(){
+		  var form = layui.form;
+		  form.on('switch(statusSwitch)', function(data){
+			  if(data.elem.checked){
+				  $("#reasonDiv").hide();
+			  }else{
+				  $("#reasonDiv").show();
+			  }
+			});  
+		});
+		
+		function edit() {
+        	var id = $("input[name='id']").val();
+        	var providerName = $("input[name='providerName']").val();
+        	var wangwang = $("input[name='wangwang']").val();
+        	var wechat = $("input[name='wechat']").val();
+        	var qq = $("input[name='qq']").val();
+        	var cellPhone = $("input[name='cellPhone']").val();
+        	var countryId = $("#countrySelect").val();
+        	var status = $("input[name='status']").is(':checked') == true ? 1 : 2;
+        	var reason = $("input[name='reason']").val();
+        	$.ajax({
+        		cache : true,
+        		type : "POST",
+        		url : prefix + "/save",
+        		data : {
+        			"id": id,
+        			"providerName": providerName,
+        			"wangwang": wangwang,
+        			"wechat": wechat,
+        			"qq": qq,
+        			"cellPhone": cellPhone,
+        			"countryId": countryId,
+        			"reason": reason,
+        			"status" : status
+        		},
+        		async : false,
+        		error : function(request) {
+        			$.modal.alertError("系统错误");
+        		},
+        		success : function(data) {
+        			$.operate.saveSuccess(data);
+        		}
+        	});
+        }
+		
+		$("#countrySelect").selectPage({
+		  	showField : 'countryName',
+		    keyField : 'countryId',
+		    data : ctx + 'module/address/country/page',
+		    eAjaxSuccess : function(d){
+				return d;
+			},
+			formatItem : function(data) {
+				return data.countryName + '(' + data.phoneCode + ')';
+			}
+		});
+	</script>
+</body>
+</html>

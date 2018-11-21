@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.module.platform.mapper.PlatformMapper">
+    
+    <resultMap type="Platform" id="PlatformResult">
+        <result property="id"    column="id"    />
+        <result property="platformName"    column="platform_name"    />
+        <result property="platformTypeId"    column="platform_type_id"    />
+        <result property="officialWebsite"    column="official_website"    />
+        <result property="platformLogo"    column="platform_logo"    />
+        <result property="interTransaction"    column="inter_transaction"    />
+        <result property="kycType"    column="kyc_type"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="platformTypeName"    column="platform_type_name"    />
+    </resultMap>
+	
+	<sql id="selectPlatformVo">
+        select id, platform_name, platform_type_id, official_website, platform_logo, inter_transaction, kyc_type, create_by, create_time, update_by, update_time from sys_platform
+    </sql>
+	
+    <select id="selectPlatformList" parameterType="Platform" resultMap="PlatformResult">
+        SELECT 
+		    p.id,
+		    p.platform_name,
+		    p.platform_type_id,
+		    p.official_website,
+		    p.platform_logo,
+		    p.inter_transaction,
+		    p.kyc_type,
+		    p.create_by,
+		    p.create_time,
+		    p.update_by,
+		    p.update_time,
+		    t.platform_type_name
+		FROM
+		    sys_platform p
+		        LEFT JOIN
+		    sys_platform_type t ON p.platform_type_id = t.id
+        <where>  
+            <if test="id != null and id != ''"> and p.id = #{id}</if>
+             <if test="platformName != null and platformName != ''"> and p.platform_name = #{platformName}</if>
+             <if test="platformTypeId != null and platformTypeId != ''"> and p.platform_type_id = #{platformTypeId}</if>
+             <if test="officialWebsite != null and officialWebsite != ''"> and p.official_website = #{officialWebsite}</if>
+             <if test="platformLogo != null and platformLogo != ''"> and p.platform_logo = #{platformLogo}</if>
+             <if test="interTransaction != null and interTransaction != ''"> and p.inter_transaction = #{interTransaction}</if>
+             <if test="kycType != null and kycType != ''"> and p.kyc_type = #{kycType}</if>
+         </where>
+    </select>
+    
+    <select id="selectPlatformById" parameterType="Integer" resultMap="PlatformResult">
+        <include refid="selectPlatformVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPlatform" parameterType="Platform">
+        insert into sys_platform (
+			<if test="id != null and id != '' ">id, </if>
+			<if test="platformName != null and platformName != '' ">platform_name, </if>
+			<if test="platformTypeId != null and platformTypeId != '' ">platform_type_id, </if>
+			<if test="officialWebsite != null and officialWebsite != '' ">official_website, </if>
+			<if test="platformLogo != null and platformLogo != '' ">platform_logo, </if>
+			<if test="interTransaction != null and interTransaction != '' ">inter_transaction, </if>
+			<if test="kycType != null and kycType != '' ">kyc_type, </if>
+			<if test="createBy != null and createBy != '' ">create_by, </if>
+			create_time
+        )values(
+			<if test="id != null and id != ''">#{id}, </if>
+			<if test="platformName != null and platformName != ''">#{platformName}, </if>
+			<if test="platformTypeId != null and platformTypeId != ''">#{platformTypeId}, </if>
+			<if test="officialWebsite != null and officialWebsite != ''">#{officialWebsite}, </if>
+			<if test="platformLogo != null and platformLogo != ''">#{platformLogo}, </if>
+			<if test="interTransaction != null and interTransaction != ''">#{interTransaction}, </if>
+			<if test="kycType != null and kycType != ''">#{kycType}, </if>
+			<if test="createBy != null and createBy != ''">#{createBy}, </if>
+			now()
+		)
+    </insert>
+	 
+    <update id="updatePlatform" parameterType="Platform">
+        update sys_platform 
+        <set>
+            <if test="platformName != null and platformName != ''">platform_name = #{platformName}, </if>
+            <if test="platformTypeId != null and platformTypeId != ''">platform_type_id = #{platformTypeId}, </if>
+            <if test="officialWebsite != null and officialWebsite != ''">official_website = #{officialWebsite}, </if>
+            <if test="platformLogo != null and platformLogo != ''">platform_logo = #{platformLogo}, </if>
+            <if test="interTransaction != null and interTransaction != ''">inter_transaction = #{interTransaction}, </if>
+            <if test="kycType != null and kycType != ''">kyc_type = #{kycType}, </if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy}, </if>
+            <if test="createTime != null and createTime != ''">create_time = #{createTime}, </if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy}, </if>
+            <if test="updateTime != null and updateTime != ''">update_time = #{updateTime}</if>
+        </set>
+        where id = #{id}
+    </update>
+	
+	<delete id="deletePlatformById" parameterType="Integer">
+        delete from sys_platform where id = #{id}
+    </delete>
+	
+    <delete id="deletePlatformByIds" parameterType="String">
+        delete from sys_platform where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

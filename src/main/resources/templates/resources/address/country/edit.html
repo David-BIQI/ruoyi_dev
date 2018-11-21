@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link href="/ajax/libs/iCheck/custom.css" th:href="@{/ajax/libs/iCheck/custom.css}" rel="stylesheet"/>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-country-edit" th:object="${country}">
+            <input id="id" name="countryId" th:field="*{countryId}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">国家名称：</label>
+                <div class="col-sm-8">
+                    <input id="countryName" name="countryName" th:field="*{countryName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">手机区号：</label>
+                <div class="col-sm-8">
+                    <input id="phoneCode" name="phoneCode" th:field="*{phoneCode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">国家码：</label>
+                <div class="col-sm-8">
+                    <input id="countryCode" name="countryCode" th:field="*{countryCode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">状态：</label>
+				<div class="col-sm-8" th:with="type=${@dictService.selectDictData('sys_show_hide')}">
+					<div th:each="dict : ${type}" th:class="${dict['cssClass']}">
+						<input type="radio" th:id="${dict['dictCode']}" name="visible" th:value="${dict['dictValue']}" th:field="*{status}">
+						<label th:for="${dict['dictCode']}" th:text="${dict['dictLabel']}"></label>
+					</div>
+				</div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+                </div>
+            </div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+	<script th:src="@{/ajax/libs/iCheck/icheck.min.js}"></script>
+	<script th:src="@{/ajax/libs/select/select2.js}"></script>
+    <script type="text/javascript">
+		var prefix = ctx + "module/address/country"
+		$("#form-country-edit").validate({
+			rules:{
+				countryName:{
+					required:true,
+				},
+				phoneCode:{
+					required:true,
+				},
+				countryCode:{
+					required:true,
+					remote: {
+                        url: prefix + "/checkCountryCodeUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                        	'countryCode': function() {
+                                return $.trim($("#countryCode").val());
+                            },
+							"countryId": function(){
+                                return $.trim($("#id").val());
+								
+							}
+                        },
+                        dataFilter: function(data, type) {
+                            if (data == "0") return true;
+                            else return false;
+                        }
+                    }
+				},
+			},
+			submitHandler: function(form) {
+				$.operate.save(prefix + "/save", $('#form-country-edit').serialize());
+			}
+		});
+	</script>
+</body>
+</html>

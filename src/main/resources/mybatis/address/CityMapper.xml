@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.module.address.mapper.CityMapper">
+    
+    <resultMap type="City" id="CityResult">
+        <result property="id"    column="id"    />
+        <result property="city"    column="city"    />
+        <result property="countryId"    column="country_id"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="countryName"    column="country_name"    />
+    </resultMap>
+    
+    <select id="selectCityById" parameterType="Integer" resultMap="CityResult">
+        select id, city, country_id, status, create_time, create_by, update_time, update_by, remark from sys_address_city
+        where id = #{id}
+    </select>
+    
+    <select id="selectCityList" parameterType="City" resultMap="CityResult">
+        select c.id, c.city, c.country_id, c.status, c.create_time, c.create_by, c.update_time, c.update_by, c.remark, co.country_name from sys_address_city
+       c left join sys_address_country co ON c.country_id = co.id
+        <where>  
+            <if test="id != null and id != ''"> and c.id = #{id}</if>
+             <if test="city != null and city != ''"> and c.city = #{city}</if>
+             <if test="countryId != null and countryId != ''"> and c.country_id = #{countryId}</if>
+             <if test="status != null and status != ''"> and c.status = #{status}</if>
+             <if test="createTime != null and createTime != ''"> and c.create_time = #{createTime}</if>
+             <if test="createBy != null and createBy != ''"> and c.create_by = #{createBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and c.update_time = #{updateTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and c.update_by = #{updateBy}</if>
+             <if test="remark != null and remark != ''"> and c.remark = #{remark}</if>
+         </where>
+    </select>
+    
+    <insert id="insertCity" parameterType="City">
+        insert into sys_address_city (
+			<if test="id != null and id != '' ">id, </if>
+			<if test="city != null and city != '' ">city, </if>
+			<if test="countryId != null and countryId != '' ">country_id, </if>
+			<if test="status != null and status != '' ">status, </if>
+			<if test="createBy != null and createBy != '' ">create_by, </if>
+			<if test="remark != null and remark != '' ">remark, </if>
+			create_time
+        )values(
+			<if test="id != null and id != ''">#{id}, </if>
+			<if test="city != null and city != ''">#{city}, </if>
+			<if test="countryId != null and countryId != ''">#{countryId}, </if>
+			<if test="status != null and status != ''">#{status}, </if>
+			<if test="createBy != null and createBy != ''">#{createBy}, </if>
+			<if test="remark != null and remark != ''">#{remark}, </if>
+			now()
+		)
+    </insert>
+	 
+    <update id="updateCity" parameterType="City">
+        update sys_address_city 
+        <set>
+            <if test="city != null and city != ''">city = #{city}, </if>
+            <if test="countryId != null and countryId != ''">country_id = #{countryId}, </if>
+            <if test="status != null and status != ''">status = #{status}, </if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy}, </if>
+            <if test="remark != null and remark != ''">remark = #{remark}, </if>
+            <if test="updateTime != null and updateTime != ''">update_time = now() </if>
+        </set>
+        where id = #{id}
+    </update>
+	
+    <delete id="deleteCityByIds" parameterType="Integer">
+        delete from sys_address_city where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

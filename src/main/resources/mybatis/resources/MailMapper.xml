@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.module.mail.mapper.MailMapper">
+    
+    <resultMap type="Mail" id="MailResult">
+        <result property="id"    column="id"    />
+        <result property="mailAddress"    column="mail_address"    />
+        <result property="mailBackup"    column="mail_backup"    />
+        <result property="cellPhone"    column="cell_phone"    />
+        <result property="usageStatus"    column="usage_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+    
+    <select id="selectMailById" parameterType="Integer" resultMap="MailResult">
+        select id, mail_address, mail_backup, cell_phone, usage_status, create_by, create_time, update_by, update_time, remark from sys_mail
+        where id = #{id}
+    </select>
+    
+    <select id="selectMailList" parameterType="Mail" resultMap="MailResult">
+        select id, mail_address, mail_backup, cell_phone, usage_status, create_by, create_time, update_by, update_time, remark from sys_mail
+        <where>  
+            <if test="id != null and id != ''"> and id = #{id}</if>
+             <if test="mailAddress != null and mailAddress != ''"> and mail_address = #{mailAddress}</if>
+             <if test="mailBackup != null and mailBackup != ''"> and mail_backup = #{mailBackup}</if>
+             <if test="cellPhone != null and cellPhone != ''"> and cell_phone = #{cellPhone}</if>
+             <if test="usageStatus != null and usageStatus != ''"> and usage_status = #{usageStatus}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+             <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+         </where>
+    </select>
+    
+    <insert id="insertMail" parameterType="Mail">
+        insert into sys_mail (
+			<if test="id != null and id != '' ">id, </if>
+			<if test="mailAddress != null and mailAddress != '' ">mail_address, </if>
+			<if test="mailBackup != null and mailBackup != '' ">mail_backup, </if>
+			<if test="cellPhone != null and cellPhone != '' ">cell_phone, </if>
+			<if test="usageStatus != null and usageStatus != '' ">usage_status, </if>
+			<if test="createBy != null and createBy != '' ">create_by, </if>
+			<if test="createTime != null and createTime != '' ">create_time, </if>
+			<if test="updateBy != null and updateBy != '' ">update_by, </if>
+			<if test="updateTime != null and updateTime != '' ">update_time, </if>
+			<if test="remark != null and remark != '' ">remark</if>
+        )values(
+			<if test="id != null and id != ''">#{id}, </if>
+			<if test="mailAddress != null and mailAddress != ''">#{mailAddress}, </if>
+			<if test="mailBackup != null and mailBackup != ''">#{mailBackup}, </if>
+			<if test="cellPhone != null and cellPhone != ''">#{cellPhone}, </if>
+			<if test="usageStatus != null and usageStatus != ''">#{usageStatus}, </if>
+			<if test="createBy != null and createBy != ''">#{createBy}, </if>
+			<if test="createTime != null and createTime != ''">#{createTime}, </if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy}, </if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime}, </if>
+			<if test="remark != null and remark != ''">#{remark}</if>
+		)
+    </insert>
+	 
+    <update id="updateMail" parameterType="Mail">
+        update sys_mail 
+        <set>
+            <if test="mailAddress != null and mailAddress != ''">mail_address = #{mailAddress}, </if>
+            <if test="mailBackup != null and mailBackup != ''">mail_backup = #{mailBackup}, </if>
+            <if test="cellPhone != null and cellPhone != ''">cell_phone = #{cellPhone}, </if>
+            <if test="usageStatus != null and usageStatus != ''">usage_status = #{usageStatus}, </if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy}, </if>
+            <if test="createTime != null and createTime != ''">create_time = #{createTime}, </if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy}, </if>
+            <if test="updateTime != null and updateTime != ''">update_time = #{updateTime}, </if>
+            <if test="remark != null and remark != ''">remark = #{remark}</if>
+        </set>
+        where id = #{id}
+    </update>
+	
+    <delete id="deleteMailByIds" parameterType="Integer">
+        delete from sys_mail where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

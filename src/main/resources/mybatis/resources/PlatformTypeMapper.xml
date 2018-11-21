@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.module.platform.mapper.PlatformTypeMapper">
+    
+    <resultMap type="PlatformType" id="TypeResult">
+        <result property="id"    column="id"    />
+        <result property="platformTypeName"    column="platform_type_name"    />
+        <result property="platformCurrency"    column="platform_currency"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectTypeVo">
+        select id, platform_type_name, platform_currency, create_by, create_time, update_by, update_time from sys_platform_type
+    </sql>
+	
+    <select id="selectTypeList" parameterType="PlatformType" resultMap="TypeResult">
+        <include refid="selectTypeVo"/>
+        <where>  
+            <if test="id != null and id != ''"> and id = #{id}</if>
+             <if test="platformTypeName != null and platformTypeName != ''"> and platform_type_name = #{platformTypeName}</if>
+             <if test="platformCurrency != null and platformCurrency != ''"> and platform_currency = #{platformCurrency}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectTypeById" parameterType="Integer" resultMap="TypeResult">
+        <include refid="selectTypeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertType" parameterType="PlatformType">
+        insert into sys_platform_type (
+			<if test="id != null and id != '' ">id, </if>
+			<if test="platformTypeName != null and platformTypeName != '' ">platform_type_name, </if>
+			<if test="platformCurrency != null and platformCurrency != '' ">platform_currency, </if>
+			<if test="createBy != null and createBy != '' ">create_by, </if>
+			create_time
+        )values(
+			<if test="id != null and id != ''">#{id}, </if>
+			<if test="platformTypeName != null and platformTypeName != ''">#{platformTypeName}, </if>
+			<if test="platformCurrency != null and platformCurrency != '' ">#{platformCurrency}, </if>
+			<if test="createBy != null and createBy != ''">#{createBy}, </if>
+			now()
+		)
+    </insert>
+	 
+    <update id="updateType" parameterType="PlatformType">
+        update sys_platform_type 
+        <set>
+            <if test="platformTypeName != null and platformTypeName != ''">platform_type_name = #{platformTypeName}, </if>
+            <if test="platformCurrency != null and platformCurrency != ''">platform_currency = #{platformCurrency}, </if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy}, </if>
+            <if test="updateTime != null and updateTime != ''">update_time = #{updateTime}</if>
+        </set>
+        where id = #{id}
+    </update>
+	
+	<delete id="deleteTypeById" parameterType="Integer">
+        delete from sys_platform_type where id = #{id}
+    </delete>
+	
+    <delete id="deleteTypeByIds" parameterType="String">
+        delete from sys_platform_type where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

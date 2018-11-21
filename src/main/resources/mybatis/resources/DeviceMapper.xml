@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.module.device.mapper.DeviceMapper">
+    
+    <resultMap type="Device" id="DeviceResult">
+        <result property="id"    column="id"    />
+        <result property="deviceMark"    column="device_mark"    />
+        <result property="deviceColor"    column="device_color"    />
+        <result property="serialNumber"    column="serial_number"    />
+        <result property="usageStatus"    column="usage_status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+    
+    <select id="selectDeviceById" parameterType="Integer" resultMap="DeviceResult">
+        select id, device_mark, device_color, serial_number, usage_status, create_time, create_by, update_time, update_by, remark from sys_device
+        where id = #{id}
+    </select>
+    
+    <select id="selectDeviceList" parameterType="Device" resultMap="DeviceResult">
+        select id, device_mark, device_color, serial_number, usage_status, create_time, create_by, update_time, update_by, remark from sys_device
+        <where>  
+            <if test="id != null and id != ''"> and id = #{id}</if>
+             <if test="deviceMark != null and deviceMark != ''"> and device_mark = #{deviceMark}</if>
+             <if test="deviceColor != null and deviceColor != ''"> and device_color = #{deviceColor}</if>
+             <if test="serialNumber != null and serialNumber != ''"> and serial_number = #{serialNumber}</if>
+             <if test="usageStatus != null and usageStatus != ''"> and usage_status = #{usageStatus}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+         </where>
+    </select>
+    
+    <insert id="insertDevice" parameterType="Device">
+        insert into sys_device (
+			<if test="id != null and id != '' ">id, </if>
+			<if test="deviceMark != null and deviceMark != '' ">device_mark, </if>
+			<if test="deviceColor != null and deviceColor != '' ">device_color, </if>
+			<if test="serialNumber != null and serialNumber != '' ">serial_number, </if>
+			<if test="usageStatus != null and usageStatus != '' ">usage_status, </if>
+			<if test="createBy != null and createBy != '' ">create_by, </if>
+			<if test="updateTime != null and updateTime != '' ">update_time, </if>
+			<if test="updateBy != null and updateBy != '' ">update_by, </if>
+			<if test="remark != null and remark != '' ">remark, </if>
+			create_time
+        )values(
+			<if test="id != null and id != ''">#{id}, </if>
+			<if test="deviceMark != null and deviceMark != ''">#{deviceMark}, </if>
+			<if test="deviceColor != null and deviceColor != ''">#{deviceColor}, </if>
+			<if test="serialNumber != null and serialNumber != ''">#{serialNumber}, </if>
+			<if test="usageStatus != null and usageStatus != ''">#{usageStatus}, </if>
+			<if test="createBy != null and createBy != ''">#{createBy}, </if>
+			<if test="updateTime != null and updateTime != ''">#{updateTime}, </if>
+			<if test="updateBy != null and updateBy != ''">#{updateBy}, </if>
+			<if test="remark != null and remark != ''">#{remark}, </if>
+			now()
+		)
+    </insert>
+	 
+    <update id="updateDevice" parameterType="Device">
+        update sys_device 
+        <set>
+            <if test="deviceMark != null and deviceMark != ''">device_mark = #{deviceMark}, </if>
+            <if test="deviceColor != null and deviceColor != ''">device_color = #{deviceColor}, </if>
+            <if test="serialNumber != null and serialNumber != ''">serial_number = #{serialNumber}, </if>
+            <if test="usageStatus != null and usageStatus != ''">usage_status = #{usageStatus}, </if>
+            <if test="createTime != null and createTime != ''">create_time = #{createTime}, </if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy}, </if>
+            <if test="updateTime != null and updateTime != ''">update_time = #{updateTime}, </if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy}, </if>
+            <if test="remark != null and remark != ''">remark = #{remark}</if>
+        </set>
+        where id = #{id}
+    </update>
+	
+    <delete id="deleteDeviceByIds" parameterType="Integer">
+        delete from sys_device where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

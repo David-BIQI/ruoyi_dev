@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.module.personal.mapper.PersonalProfileMapper">
+    
+    <resultMap type="PersonalProfile" id="PersonalProfileResult">
+        <result property="id"    column="id"    />
+        <result property="countryId"    column="country_id"    />
+        <result property="countryTitle"    column="country_title"    />
+        <result property="cityId"    column="city_id"    />
+        <result property="cityTitle"    column="city_title"    />
+        <result property="addressId"    column="address_id"    />
+        <result property="addressTitle"    column="address_title"    />
+        <result property="province"    column="province"    />
+        <result property="holder"    column="holder"    />
+        <result property="userName"    column="user_name"    />
+        <result property="password"    column="password"    />
+        <result property="gender"    column="gender"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="profileType"    column="profile_type"    />
+        <result property="profileStatus"    column="profile_status"    />
+        <result property="importance"    column="importance"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+	
+	<sql id="selectProfileVo">
+        select id, country_id, country_title, city_id, city_title, address_id, address_title, province, holder, user_name, password, gender, birthday, profile_type, profile_status, importance, create_by, create_time, update_by, update_time from sys_personal_profile
+    </sql>
+	
+    <select id="selectProfileList" parameterType="PersonalProfile" resultMap="PersonalProfileResult">
+        <include refid="selectProfileVo"/>
+        <where>  
+            <if test="id != null and id != ''"> and id = #{id}</if>
+             <if test="countryId != null and countryId != ''"> and country_id = #{countryId}</if>
+             <if test="countryTitle != null and countryTitle != ''"> and country_title = #{countryTitle}</if>
+             <if test="cityId != null and cityId != ''"> and city_id = #{cityId}</if>
+             <if test="cityTitle != null and cityTitle != ''"> and city_title = #{cityTitle}</if>
+             <if test="addressId != null and addressId != ''"> and address_id = #{addressId}</if>
+             <if test="addressTitle != null and addressTitle != ''"> and address_title = #{addressTitle}</if>
+             <if test="province != null and province != ''"> and province = #{province}</if>
+             <if test="holder != null and holder != ''"> and holder = #{holder}</if>
+             <if test="userName != null and userName != ''"> and user_name = #{userName}</if>
+             <if test="password != null and password != ''"> and password = #{password}</if>
+             <if test="gender != null and gender != ''"> and gender = #{gender}</if>
+             <if test="birthday != null and birthday != ''"> and birthday = #{birthday}</if>
+             <if test="profileType != null and profileType != ''"> and profile_type = #{profileType}</if>
+             <if test="profileStatus != null and profileStatus != ''"> and profile_status = #{profileStatus}</if>
+             <if test="importance != null and importance != ''"> and importance = #{importance}</if>
+             <if test="createBy != null and createBy != ''"> and create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectProfileById" parameterType="Integer" resultMap="PersonalProfileResult">
+        <include refid="selectProfileVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProfile" parameterType="PersonalProfile">
+        insert into sys_personal_profile (
+			<if test="id != null and id != '' ">id, </if>
+			<if test="countryId != null and countryId != '' ">country_id, </if>
+			<if test="countryTitle != null and countryTitle != '' ">country_title, </if>
+			<if test="cityId != null and cityId != '' ">city_id, </if>
+			<if test="cityTitle != null and cityTitle != '' ">city_title, </if>
+			<if test="addressId != null and addressId != '' ">address_id, </if>
+			<if test="addressTitle != null and addressTitle != '' ">address_title, </if>
+			<if test="province != null and province != '' ">province, </if>
+			<if test="holder != null and holder != '' ">holder, </if>
+			<if test="userName != null and userName != '' ">user_name, </if>
+			<if test="password != null and password != '' ">password, </if>
+			<if test="gender != null and gender != '' ">gender, </if>
+			<if test="birthday != null and birthday != '' ">birthday, </if>
+			<if test="profileType != null and profileType != '' ">profile_type, </if>
+			<if test="profileStatus != null and profileStatus != '' ">profile_status, </if>
+			<if test="importance != null and importance != '' ">importance, </if>
+			<if test="createBy != null and createBy != '' ">create_by, </if>
+			create_time
+        )values(
+			<if test="id != null and id != ''">#{id}, </if>
+			<if test="countryId != null and countryId != ''">#{countryId}, </if>
+			<if test="countryTitle != null and countryTitle != ''">#{countryTitle}, </if>
+			<if test="cityId != null and cityId != ''">#{cityId}, </if>
+			<if test="cityTitle != null and cityTitle != ''">#{cityTitle}, </if>
+			<if test="addressId != null and addressId != ''">#{addressId}, </if>
+			<if test="addressTitle != null and addressTitle != ''">#{addressTitle}, </if>
+			<if test="province != null and province != ''">#{province}, </if>
+			<if test="holder != null and holder != ''">#{holder}, </if>
+			<if test="userName != null and userName != ''">#{userName}, </if>
+			<if test="password != null and password != ''">#{password}, </if>
+			<if test="gender != null and gender != ''">#{gender}, </if>
+			<if test="birthday != null and birthday != ''">#{birthday}, </if>
+			<if test="profileType != null and profileType != ''">#{profileType}, </if>
+			<if test="profileStatus != null and profileStatus != ''">#{profileStatus}, </if>
+			<if test="importance != null and importance != ''">#{importance}, </if>
+			<if test="createBy != null and createBy != ''">#{createBy}, </if>\
+			now()
+		)
+    </insert>
+	 
+    <update id="updateProfile" parameterType="PersonalProfile">
+        update sys_personal_profile 
+        <set>
+            <if test="countryId != null and countryId != ''">country_id = #{countryId}, </if>
+            <if test="countryTitle != null and countryTitle != ''">country_title = #{countryTitle}, </if>
+            <if test="cityId != null and cityId != ''">city_id = #{cityId}, </if>
+            <if test="cityTitle != null and cityTitle != ''">city_title = #{cityTitle}, </if>
+            <if test="addressId != null and addressId != ''">address_id = #{addressId}, </if>
+            <if test="addressTitle != null and addressTitle != ''">address_title = #{addressTitle}, </if>
+            <if test="province != null and province != ''">province = #{province}, </if>
+            <if test="holder != null and holder != ''">holder = #{holder}, </if>
+            <if test="userName != null and userName != ''">user_name = #{userName}, </if>
+            <if test="password != null and password != ''">password = #{password}, </if>
+            <if test="gender != null and gender != ''">gender = #{gender}, </if>
+            <if test="birthday != null and birthday != ''">birthday = #{birthday}, </if>
+            <if test="profileType != null and profileType != ''">profile_type = #{profileType}, </if>
+            <if test="profileStatus != null and profileStatus != ''">profile_status = #{profileStatus}, </if>
+            <if test="importance != null and importance != ''">importance = #{importance}, </if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy}, </if>
+            <if test="createTime != null and createTime != ''">create_time = #{createTime}, </if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy}, </if>
+            <if test="updateTime != null and updateTime != ''">update_time = #{updateTime}</if>
+        </set>
+        where id = #{id}
+    </update>
+	
+	<delete id="deleteProfileById" parameterType="Integer">
+        delete from sys_personal_profile where id = #{id}
+    </delete>
+	
+    <delete id="deleteProfileByIds" parameterType="String">
+        delete from sys_personal_profile where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

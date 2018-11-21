@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<style type="text/css">
+.fixed-table-container{position:relative;clear:both;border:1px solid #ddd;border-radius:4px;-webkit-border-radius:4px;-moz-border-radius:4px}
+</style>
+<body class="gray-bg">
+    <div class="container-div">
+    	<div class="ui-layout-center">
+			<div class="layui-tab layui-tab-card" lay-filter="ipProvidertabs">
+				<ul class="layui-tab-title">
+	                <li class="layui-this" ip-provider-status="1">Available Provider</li>
+	                <li ip-provider-status="2">Prohibition Provider</li>
+				</ul>
+				<div class="btn-group hidden-xs" id="toolbar" role="group">
+					<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="module:provider:add">
+						<i class="fa fa-plus"></i> 新增
+					</a>
+					<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.batRemove()" shiro:hasPermission="module:provider:remove">
+						<i class="fa fa-trash-o"></i> 删除
+					</a>
+				</div>
+				<div class="col-sm-12 select-info table-striped">
+					<table id="bootstrap-table" data-mobile-responsive="true"></table>
+				</div>
+    		</div>
+    	</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permissionService.hasPermi('module:provider:edit')}]];
+        var removeFlag = [[${@permissionService.hasPermi('module:provider:remove')}]];
+        var prefix = ctx + "module/ipMgt/provider"
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "ip供应商",
+                queryParams: {"status": 1},
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'id', 
+					title : '编号' 
+				},
+				{
+					field : 'providerName', 
+					title : '供应商名称' 
+				},
+				{
+					field : 'wangwang', 
+					title : '联系方式 - 旺旺' 
+				},
+				{
+					field : 'wechat', 
+					title : '联系方式 - 微信' 
+				},
+				{
+					field : 'qq', 
+					title : '联系方式 - QQ' 
+				},
+				{
+					field : 'cellPhone', 
+					title : '联系方式 - 手机号码' 
+				},
+				{
+					field : 'countryName', 
+					title : '关联国家' 
+				},
+				{
+					field : 'price', 
+					title : '价格'
+				},
+				{
+					field : 'reason', 
+					title : '禁用原因' 
+				},
+				{
+					field : 'optTime', 
+					title : '禁用时间' 
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+        
+        layui.use([ 'layer', 'element' ], function() {
+			var element = layui.element;
+			element.on('tab(ipProvidertabs)', function(){
+		    	var status = this.getAttribute('ip-provider-status');
+		    	var params = {
+		    		"status": status
+		    	};
+		    	$.post(prefix + "/list", params, function(data){
+		    		$("#bootstrap-table").bootstrapTable('load', data)
+		    	});
+		  	});
+		});
+    </script>
+</body>
+</html>

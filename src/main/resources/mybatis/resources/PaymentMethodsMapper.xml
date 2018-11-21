@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.module.payment.mapper.PaymentMethodsMapper">
+    
+    <resultMap type="Methods" id="MethodsResult">
+        <result property="id"    column="id"    />
+        <result property="paymentName"    column="payment_name"    />
+        <result property="paymentType"    column="payment_type"    />
+        <result property="officialWebsite"    column="official_website"    />
+        <result property="paymentLogo"    column="payment_logo"    />
+        <result property="currencyId"    column="currency_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="typeName"    column="type_name"    />
+    </resultMap>
+	
+	<sql id="selectMethodsVo">
+        select id, payment_name, payment_type, official_website, payment_logo, currency_id, create_by, create_time, update_by, update_time from sys_payment_methods
+    </sql>
+	
+    <select id="selectMethodsList" parameterType="Methods" resultMap="MethodsResult">
+        
+		SELECT 
+		    p.id,
+		    p.payment_name,
+		    p.payment_type,
+		    p.official_website,
+		    p.payment_logo,
+		    p.currency_id,
+		    p.create_by,
+		    p.create_time,
+		    p.update_by,
+		    p.update_time,
+		    t.type_name
+		FROM
+		    sys_payment_methods p
+		        LEFT JOIN
+		    sys_payment_method_type t ON p.payment_type = t.id
+        <where>  
+            <if test="id != null and id != ''"> and p.id = #{id}</if>
+             <if test="paymentName != null and paymentName != ''"> and p.payment_name = #{paymentName}</if>
+             <if test="paymentType != null and paymentType != ''"> and p.payment_type = #{paymentType}</if>
+             <if test="officialWebsite != null and officialWebsite != ''"> and p.official_website = #{officialWebsite}</if>
+             <if test="paymentLogo != null and paymentLogo != ''"> and p.payment_logo = #{paymentLogo}</if>
+             <if test="currencyId != null and currencyId != ''"> and p.currency_id = #{currencyId}</if>
+             <if test="createBy != null and createBy != ''"> and p.create_by = #{createBy}</if>
+             <if test="createTime != null and createTime != ''"> and p.create_time = #{createTime}</if>
+             <if test="updateBy != null and updateBy != ''"> and p.update_by = #{updateBy}</if>
+             <if test="updateTime != null and updateTime != ''"> and p.update_time = #{updateTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectMethodsById" parameterType="Integer" resultMap="MethodsResult">
+        <include refid="selectMethodsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMethods" parameterType="Methods">
+        insert into sys_payment_methods (
+			<if test="id != null and id != '' ">id, </if>
+			<if test="paymentName != null and paymentName != '' ">payment_name, </if>
+			<if test="paymentType != null and paymentType != '' ">payment_type, </if>
+			<if test="officialWebsite != null and officialWebsite != '' ">official_website, </if>
+			<if test="paymentLogo != null and paymentLogo != '' ">payment_logo, </if>
+			<if test="currencyId != null and currencyId != '' ">currency_id, </if>
+			<if test="createBy != null and createBy != '' ">create_by, </if>
+			create_time
+        )values(
+			<if test="id != null and id != ''">#{id}, </if>
+			<if test="paymentName != null and paymentName != ''">#{paymentName}, </if>
+			<if test="paymentType != null and paymentType != ''">#{paymentType}, </if>
+			<if test="officialWebsite != null and officialWebsite != ''">#{officialWebsite}, </if>
+			<if test="paymentLogo != null and paymentLogo != ''">#{paymentLogo}, </if>
+			<if test="currencyId != null and currencyId != ''">#{currencyId}, </if>
+			<if test="createBy != null and createBy != ''">#{createBy}, </if>
+			now()
+		)
+    </insert>
+	 
+    <update id="updateMethods" parameterType="Methods">
+        update sys_payment_methods 
+        <set>
+            <if test="paymentName != null and paymentName != ''">payment_name = #{paymentName}, </if>
+            <if test="paymentType != null and paymentType != ''">payment_type = #{paymentType}, </if>
+            <if test="officialWebsite != null and officialWebsite != ''">official_website = #{officialWebsite}, </if>
+            <if test="paymentLogo != null and paymentLogo != ''">payment_logo = #{paymentLogo}, </if>
+            <if test="currencyId != null and currencyId != ''">currency_id = #{currencyId}, </if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy}, </if>
+            <if test="createTime != null and createTime != ''">create_time = #{createTime}, </if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy}, </if>
+            <if test="updateTime != null and updateTime != ''">update_time = #{updateTime}</if>
+        </set>
+        where id = #{id}
+    </update>
+	
+	<delete id="deleteMethodsById" parameterType="Integer">
+        delete from sys_payment_methods where id = #{id}
+    </delete>
+	
+    <delete id="deleteMethodsByIds" parameterType="String">
+        delete from sys_payment_methods where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
